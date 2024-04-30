@@ -1,0 +1,39 @@
+import os
+import shutil
+
+def organize_files(source_dir, destination_dir):
+    # Dictionary mapping file extensions to their respective directories
+    file_types = {
+        'images': ['.jpg', '.jpeg', '.png', '.gif'],
+        'videos': ['.mp4', '.avi', '.mov'],
+        'documents': ['.pdf', '.doc', '.docx', '.txt'],
+        'archives': ['.zip', '.rar', '.tar.gz'],
+        'others': []  # Default directory for other file types
+    }
+
+    # Create destination directories if they don't exist
+    for dir_name in file_types.keys():
+        dir_path = os.path.join(destination_dir, dir_name)
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+
+    # Iterate through files in the source directory
+    for filename in os.listdir(source_dir):
+        source_file_path = os.path.join(source_dir, filename)
+        if os.path.isfile(source_file_path):
+            # Determine the file type
+            file_type = 'others'
+            for category, extensions in file_types.items():
+                if any(filename.lower().endswith(ext) for ext in extensions):
+                    file_type = category
+                    break
+
+            # Move the file to the appropriate directory
+            destination_file_path = os.path.join(destination_dir, file_type, filename)
+            shutil.move(source_file_path, destination_file_path)
+            print(f"Moved {filename} to {file_type} directory")
+
+# Example usage:
+source_directory = "/path/to/source/directory"
+destination_directory = "/path/to/destination/directory"
+organize_files(source_directory, destination_directory)
